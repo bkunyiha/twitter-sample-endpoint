@@ -12,9 +12,11 @@ import fs2.text.utf8Encode
 import fs2.{Pipe, Stream, StreamApp}
 import io.circe.{Json, Printer}
 import jawnfs2._
-import org.http4s._
+import org.http4s.{BuildInfo => _, _}
 import org.http4s.client.blaze._
 import org.http4s.client.oauth1
+import org.http4s.rho.swagger.SwaggerSupport
+import org.http4s.rho.swagger.models.Info
 import org.http4s.server.blaze.BlazeBuilder
 import pureconfig.error.ConfigReaderFailures
 import pureconfig.generic.auto._
@@ -32,7 +34,7 @@ abstract class TwitterStreamApp[F[_] : Effect] extends StreamApp[F] {
    * OAuth signing is an effect due to generating a nonce for each `Request`.
    */
   private[this] def sign(consumerKey: String, consumerSecret: String, accessToken: String, accessSecret: String)
-          (req: Request[F]): F[Request[F]] = {
+                        (req: Request[F]): F[Request[F]] = {
     val consumer = oauth1.Consumer(consumerKey, consumerSecret)
     val token = oauth1.Token(accessToken, accessSecret)
     oauth1.signRequest(req, consumer, callback = None, verifier = None, token = Some(token))
@@ -43,7 +45,7 @@ abstract class TwitterStreamApp[F[_] : Effect] extends StreamApp[F] {
    * `sign` returns a `F`, so we need to `Stream.eval` it to use a for-comprehension.
    */
   private[this] def jsonStream(consumerKey: String, consumerSecret: String, accessToken: String, accessSecret: String)
-                (req: Request[F]): Stream[F, Json] =
+                              (req: Request[F]): Stream[F, Json] =
     for {
       client <- Http1Client.stream[F]()
       sr <- Stream.eval(sign(consumerKey = consumerKey,
@@ -95,11 +97,12 @@ abstract class TwitterStreamApp[F[_] : Effect] extends StreamApp[F] {
       .observe1(signal.set)
   }
 
-  private[this] def server(serverConfig: ServerConfig, twitterSampleStreamRoute: HttpService[F]): Stream[F, ExitCode] =
+  private[this] def server(serverConfig: ServerConfig, twitterSampleStreamRoute: HttpService[F]): Stream[F, ExitCode] = {
     BlazeBuilder[F]
       .bindHttp(port = serverConfig.port, host = serverConfig.ip)
       .mountService(twitterSampleStreamRoute, "/")
       .serve
+  }
 
   private[this] def appConfig(implicit F: Effect[F]): Stream[F, AppConfig] = {
     Stream.eval(
@@ -111,13 +114,21 @@ abstract class TwitterStreamApp[F[_] : Effect] extends StreamApp[F] {
   }
 
   override def stream(args: List[String], requestShutdown: F[Unit]): Stream[F, ExitCode] = {
+    import org.http4s.rho.RhoMiddleware
     for {
       config <- appConfig
       signal <- Stream.eval(signalOf(SampleTweetStreamAnalytics.empty))
-      twitterSampleStreamRoute = new TwitterSampleStreamRoute[F](signal).service
+      swaggerMiddleware: RhoMiddleware[F] = SwaggerSupport[F].createRhoMiddleware(apiInfo = Info(
+        title = SbtBuildInfo.name,
+        description = Some(SbtBuildInfo.description),
+        version = SbtBuildInfo.version
+      ))
+      statisContentRoute = new StaticContentRoute[F]().routes()
+      twitterSampleStreamRoute = new TwitterSampleStreamRoute[F](signal).toService(swaggerMiddleware)
+      httpService = twitterSampleStreamRoute <+> statisContentRoute
       analyticsStream = twitterStream(config.twitterCredentials).through(processTweet(signal))
       analyticsResult = analyticsStream.through(analyticsToByteStream).through(stdout)
-      serverStream = server(config.server, twitterSampleStreamRoute)
+      serverStream = server(config.server, httpService)
       _ <- serverStream merge (analyticsStream.drain) merge (analyticsResult.drain)
     } yield ExitCode.Success
   }

@@ -24,6 +24,6 @@ Then run the app using the following command
 $ sbt run  
 
 
-
-
+## Web interface
+http://localhost:8080
  

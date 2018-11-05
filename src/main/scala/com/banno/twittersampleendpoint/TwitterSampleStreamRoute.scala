@@ -1,29 +1,26 @@
 package com.banno.twittersampleendpoint
 
-import cats.effect.Effect
 import cats.Monad
+import cats.effect.Effect
 import com.banno.twittersampleendpoint.RouteEncoders._
 import com.banno.twittersampleendpoint.TwitterSampleStreamRoute._
 import com.banno.twittersampleendpoint.domain.SampleTweetStreamAnalytics
 import com.twitter.algebird.SpaceSaver
 import com.vdurmont.emoji.Emoji
 import fs2.async.mutable.Signal
+import org.http4s.EntityEncoder
 import org.http4s.circe._
-import org.http4s.dsl.Http4sDsl
-import org.http4s.{EntityEncoder, HttpService}
+import org.http4s.rho.RhoService
 
-class TwitterSampleStreamRoute[F[_] : Effect](signalStats: Signal[F, SampleTweetStreamAnalytics]) extends Http4sDsl[F] {
+class TwitterSampleStreamRoute[F[_] : Effect](signalStats: Signal[F, SampleTweetStreamAnalytics]) extends RhoService[F] {
 
   implicit lazy val respEntityEncoder: EntityEncoder[F, TwitterSampleStreamResponse] = jsonEncoderOf[F, TwitterSampleStreamResponse]
 
-  val service: HttpService[F] = {
-    HttpService[F] {
-      case GET -> Root =>
-        Monad[F].flatMap(signalStats.get) {
-          sampleStats: SampleTweetStreamAnalytics => {
-            Ok(response(sampleStats))
-          }
-        }
+    GET / "analytics" |>> {
+    Monad[F].flatMap(signalStats.get) {
+      sampleStats: SampleTweetStreamAnalytics => {
+        Ok(response(sampleStats))
+      }
     }
   }
 }
