@@ -1,9 +1,10 @@
 package com.banno.twittersampleendpoint
 
 import cats.effect.Effect
+import cats.Monad
 import com.banno.twittersampleendpoint.RouteEncoders._
 import com.banno.twittersampleendpoint.TwitterSampleStreamRoute._
-import com.banno.twittersampleendpoint.domain.SampleTweetStreamAlytics
+import com.banno.twittersampleendpoint.domain.SampleTweetStreamAnalytics
 import com.twitter.algebird.SpaceSaver
 import com.vdurmont.emoji.Emoji
 import fs2.async.mutable.Signal
@@ -11,18 +12,16 @@ import org.http4s.circe._
 import org.http4s.dsl.Http4sDsl
 import org.http4s.{EntityEncoder, HttpService}
 
-class TwitterSampleStreamRoute[F[_] : Effect](signalStats: Signal[F, SampleTweetStreamAlytics]) extends Http4sDsl[F] {
+class TwitterSampleStreamRoute[F[_] : Effect](signalStats: Signal[F, SampleTweetStreamAnalytics]) extends Http4sDsl[F] {
 
   implicit lazy val respEntityEncoder: EntityEncoder[F, TwitterSampleStreamResponse] = jsonEncoderOf[F, TwitterSampleStreamResponse]
 
   val service: HttpService[F] = {
     HttpService[F] {
-
       case GET -> Root =>
-        import cats.Monad
         Monad[F].flatMap(signalStats.get) {
-          sampleStats: SampleTweetStreamAlytics => {
-            Ok(responseObj(sampleStats))
+          sampleStats: SampleTweetStreamAnalytics => {
+            Ok(response(sampleStats))
           }
         }
     }
@@ -33,7 +32,7 @@ object TwitterSampleStreamRoute {
 
   val startTime = System.currentTimeMillis
 
-  def responseObj(sampleStats: SampleTweetStreamAlytics): TwitterSampleStreamResponse = {
+  def response(sampleStats: SampleTweetStreamAnalytics): TwitterSampleStreamResponse = {
     val now = System.currentTimeMillis
 
     val average = sampleStats.counter.averageFrom(startTime, now)

@@ -45,7 +45,5 @@ package object twittersampleendpoint {
     implicit lazy val hashTagRespEncoder: Encoder[HashTagResp] = deriveEncoder
     implicit lazy val linksRespEncoder: Encoder[LinksResp] = deriveEncoder
     implicit lazy val respEncoder: Encoder[TwitterSampleStreamResponse] = deriveEncoder
-
-
   }
 }
