@@ -1,6 +1,5 @@
 package com.banno.twittersampleendpoint
 
-import cats.Monad
 import cats.effect.Effect
 import com.banno.twittersampleendpoint.RouteEncoders._
 import com.banno.twittersampleendpoint.TwitterSampleStreamRoute._
@@ -11,13 +10,19 @@ import fs2.async.mutable.Signal
 import org.http4s.EntityEncoder
 import org.http4s.circe._
 import org.http4s.rho.RhoService
+import org.http4s.rho.swagger.SwaggerSupport
 
 class TwitterSampleStreamRoute[F[_] : Effect](signalStats: Signal[F, SampleTweetStreamAnalytics]) extends RhoService[F] {
 
   implicit lazy val respEntityEncoder: EntityEncoder[F, TwitterSampleStreamResponse] = jsonEncoderOf[F, TwitterSampleStreamResponse]
 
+  val swaggerEffectSupport = SwaggerSupport.apply[F]
+
+  import swaggerEffectSupport._
+
+  "Get Tweeter Sample API Analytics" **
     GET / "analytics" |>> {
-    Monad[F].flatMap(signalStats.get) {
+    implicitly[Effect[F]].flatMap(signalStats.get) {
       sampleStats: SampleTweetStreamAnalytics => {
         Ok(response(sampleStats))
       }
