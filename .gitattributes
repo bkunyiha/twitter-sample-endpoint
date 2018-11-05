@@ -1,2 +1,2 @@
 static/* linguist-vendored
-*.scala linguist-vendored=false
+src/main/resources/* linguist-vendored=false
