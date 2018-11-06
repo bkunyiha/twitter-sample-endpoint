@@ -87,3 +87,11 @@ object TwitterSampleStreamRoute {
   case class LinksResp(percentWithUrl: Double, percentWithPhotoUrl: Double, topDomains: Seq[SpaceSaver[String]])
 
 }
+
+object syntax {
+
+  import cats.effect.IO
+  import org.http4s.rho.swagger.SwaggerSupport
+
+  val io = SwaggerSupport.apply[IO]
+}
