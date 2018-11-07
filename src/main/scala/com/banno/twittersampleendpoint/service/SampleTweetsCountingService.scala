@@ -14,8 +14,7 @@ final case class Counter(count: Long) {
     val endDbl = end.toDouble
     val elapsed = endDbl - startDbl
 
-    Average(
-      rateMean = if (endDbl - startDbl == 0.0) 0.0 else count.toDouble / elapsed)
+    Average(rateMean = if (endDbl - startDbl == 0.0) 0.0 else count.toDouble / elapsed)
   }
 }
 

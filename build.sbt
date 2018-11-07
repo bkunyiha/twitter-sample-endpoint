@@ -1,5 +1,6 @@
 
 val algebirdVersion = "0.13.4"
+val catsLawsVersion = "1.0.0-RC1"
 val circeVersion = "0.9.3"
 val emojiJavaVersion = "4.0.0"
 val http4sVersion = "0.18.20"
@@ -37,23 +38,27 @@ lazy val root = (project in file("."))
       "-Ywarn-unused",
       "-Xfuture"
     ),
-    scalacOptions in (Compile, console) --= Seq("-Ywarn-unused:imports", "-Xfatal-warnings"),
+    scalacOptions in(Compile, console) --= Seq("-Ywarn-unused:imports", "-Xfatal-warnings"),
     libraryDependencies ++= Seq(
-      "org.http4s"            %% "http4s-blaze-server" % http4sVersion,
-      "org.http4s"            %% "http4s-blaze-client" % http4sVersion,
-      "org.http4s"            %% "http4s-circe"        % http4sVersion,
-      "org.http4s"            %% "http4s-dsl"          % http4sVersion,
-      "org.http4s"            %% "http4s-circe"        % http4sVersion,
-      "org.http4s"            %% "rho-swagger"         % http4sRhoVersion,
-      "io.circe"              %% "circe-generic"       % circeVersion,
-      "com.twitter"           %% "algebird-core"       % algebirdVersion,
-      "com.vdurmont"          %  "emoji-java"          % emojiJavaVersion,
-      "com.github.pureconfig" %% "pureconfig"          % pureConfigVersion,
-      "org.specs2"            %% "specs2-core"         % Specs2Version % "test",
-      "ch.qos.logback"        %  "logback-classic"     % LogbackVersion
+      "org.http4s" %% "http4s-blaze-server" % http4sVersion,
+      "org.http4s" %% "http4s-blaze-client" % http4sVersion,
+      "org.http4s" %% "http4s-circe" % http4sVersion,
+      "org.http4s" %% "http4s-dsl" % http4sVersion,
+      "org.http4s" %% "http4s-circe" % http4sVersion,
+      "org.http4s" %% "rho-swagger" % http4sRhoVersion,
+      "io.circe" %% "circe-generic" % circeVersion,
+      "io.circe" %% "circe-parser" % circeVersion,
+      "com.twitter" %% "algebird-core" % algebirdVersion,
+      "com.vdurmont" % "emoji-java" % emojiJavaVersion,
+      "com.github.pureconfig" %% "pureconfig" % pureConfigVersion,
+      "org.specs2" %% "specs2-core" % Specs2Version % "test",
+      "org.specs2" %% "specs2-scalacheck" % Specs2Version % "test",
+      "org.typelevel" %% "cats-laws" % catsLawsVersion,
+      "com.twitter" %% "algebird-test" % algebirdVersion,
+      "ch.qos.logback" % "logback-classic" % LogbackVersion
     ),
-    addCompilerPlugin("org.spire-math" %% "kind-projector"     % "0.9.6"),
-    addCompilerPlugin("com.olegpy"     %% "better-monadic-for" % "0.2.4")
+    addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.6"),
+    addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.2.4")
   )
   .settings(
     //Build info

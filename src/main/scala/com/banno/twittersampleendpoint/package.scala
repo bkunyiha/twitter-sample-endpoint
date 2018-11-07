@@ -1,6 +1,12 @@
 package com.banno
 
+import com.banno.twittersampleendpoint.TwitterSampleStreamRoute._
+import com.twitter.algebird.{Approximate, SpaceSaver}
+import com.vdurmont.emoji.Emoji
 import fs2.{Pipe, Stream}
+import io.circe.generic.semiauto.deriveEncoder
+import io.circe.syntax._
+import io.circe.{Encoder, Json}
 
 import scala.concurrent.duration._
 
@@ -16,13 +22,6 @@ package object twittersampleendpoint {
   }
 
   object RouteEncoders {
-
-    import com.banno.twittersampleendpoint.TwitterSampleStreamRoute._
-    import com.twitter.algebird.{Approximate, SpaceSaver}
-    import com.vdurmont.emoji.Emoji
-    import io.circe.generic.semiauto.deriveEncoder
-    import io.circe.syntax._
-    import io.circe.{Encoder, Json}
 
     implicit def SpaceSaverEncoder[A: Encoder]: Encoder[SpaceSaver[A]] = (ss: SpaceSaver[A]) =>
       Json.fromValues(
