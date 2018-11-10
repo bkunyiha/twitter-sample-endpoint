@@ -15,7 +15,7 @@ class StreamAnalyticsServiceTest extends FlatSpec with Matchers {
     val sampleTweet: SampleTweet = Stream
       .emit(sampleStreamJson)
       .covary[IO]
-      .through(streamAnalyticsService.twitterStream)
+      .through(streamAnalyticsService.sampleTweetStream)
       .compile
       .last
       .unsafeRunSync()
@@ -31,7 +31,7 @@ class StreamAnalyticsServiceTest extends FlatSpec with Matchers {
     val sampleTweetAnalytics: SampleTweetStreamAnalytics = Stream
       .emit(sampleStreamJson)
       .covary[IO]
-      .through(streamAnalyticsService.twitterStream)
+      .through(streamAnalyticsService.sampleTweetStream)
       .through(streamAnalyticsService.processTweet(signal))
       .compile
       .last

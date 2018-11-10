@@ -6,7 +6,7 @@ import com.banno.twittersampleendpoint.domain._
 import com.banno.twittersampleendpoint.service.StreamAnalyticsService
 import fs2.StreamApp.ExitCode
 import fs2.async.signalOf
-import fs2.io.stdout
+import fs2.io.stdoutAsync
 import fs2.{Stream, StreamApp}
 import io.circe.Json
 import jawnfs2._
@@ -26,8 +26,27 @@ object TwitterStream extends TwitterStreamApp[IO]
 
 abstract class TwitterStreamApp[F[_] : Effect] extends StreamApp[F] {
 
+  import fs2.Pipe
+  import fs2.text.utf8Encode
+
   // jawn-fs2 needs to know what JSON AST you want
   implicit val f = io.circe.jawn.CirceSupportParser.facade
+
+  private[this] def appConfig(implicit F: Effect[F]): Stream[F, AppConfig] = {
+    Stream.eval(
+      F.flatMap[Either[ConfigReaderFailures, AppConfig], AppConfig](F.delay(pureconfig.loadConfig[AppConfig])) {
+        case Left(errors) =>
+          F.raiseError(new Throwable(errors.toList.map(_.description).toString()))
+        case Right(config: AppConfig) => F.pure(config)
+      })
+  }
+
+  private[this] def server(serverConfig: ServerConfig, twitterSampleStreamRoute: HttpService[F]): Stream[F, ExitCode] = {
+    BlazeBuilder[F]
+      .bindHttp(port = serverConfig.port, host = serverConfig.ip)
+      .mountService(twitterSampleStreamRoute, "/")
+      .serve
+  }
 
   /* These values are created by a Twitter developer web app.
    * OAuth signing is an effect due to generating a nonce for each `Request`.
@@ -58,20 +77,10 @@ abstract class TwitterStreamApp[F[_] : Effect] extends StreamApp[F] {
     } yield res
   }
 
-  private[this] def server(serverConfig: ServerConfig, twitterSampleStreamRoute: HttpService[F]): Stream[F, ExitCode] = {
-    BlazeBuilder[F]
-      .bindHttp(port = serverConfig.port, host = serverConfig.ip)
-      .mountService(twitterSampleStreamRoute, "/")
-      .serve
-  }
-
-  private[this] def appConfig(implicit F: Effect[F]): Stream[F, AppConfig] = {
-    Stream.eval(
-      F.flatMap[Either[ConfigReaderFailures, AppConfig], AppConfig](F.delay(pureconfig.loadConfig[AppConfig])) {
-        case Left(errors) =>
-          F.raiseError(new Throwable(errors.toList.map(_.description).toString()))
-        case Right(config: AppConfig) => F.pure(config)
-      })
+  private[this] def toStdOut: Pipe[F, SampleTweetStreamAnalytics, Unit] = {
+    _.map(_.toString)
+      .through(utf8Encode)
+      .through(stdoutAsync)
   }
 
   override def stream(args: List[String], requestShutdown: F[Unit]): Stream[F, ExitCode] = {
@@ -87,12 +96,11 @@ abstract class TwitterStreamApp[F[_] : Effect] extends StreamApp[F] {
       twitterSampleStreamRoute = new TwitterSampleStreamRoute[F](signal).toService(swaggerMiddleware)
       streamAnalyticsService = new StreamAnalyticsService[F]
       httpService = twitterSampleStreamRoute <+> staticContentRoute
-      analyticsStream = twitterJsonStream(config.twitterCredentials)
-        .through(streamAnalyticsService.twitterStream)
-        .through(streamAnalyticsService.processTweet(signal))
-      analyticsResult = analyticsStream.through(streamAnalyticsService.analyticsToByteStream).through(stdout)
       serverStream = server(config.server, httpService)
-      _ <- serverStream merge (analyticsStream.drain) merge (analyticsResult.drain)
+      analyticsStream = twitterJsonStream(config.twitterCredentials)
+        .through(streamAnalyticsService.sampleTweetStream)
+        .through(streamAnalyticsService.processTweet(signal))
+      _ <- serverStream merge (analyticsStream to toStdOut).drain
     } yield ExitCode.Success
   }
 }

@@ -6,20 +6,15 @@ import com.banno.twittersampleendpoint.domain.{SampleTweet, SampleTweetStreamAna
 import com.banno.twittersampleendpoint.filterLeft
 import fs2.Pipe
 import fs2.async.mutable.Signal
-import fs2.text.utf8Encode
 import io.circe.{Json, Printer}
 import org.http4s.{BuildInfo => _}
 
 class StreamAnalyticsService[F[_] : Effect] {
 
-  def twitterStream: Pipe[F, Json, SampleTweet] = {
+  def sampleTweetStream: Pipe[F, Json, SampleTweet] = {
     _.map { json =>
       json.as[SampleTweet].leftMap(pE => s"ParseError: ${pE.message} - ${json.pretty(Printer.noSpaces)}")
     }.through(filterLeft)
-  }
-
-  def analyticsToByteStream: Pipe[F, SampleTweetStreamAnalytics, Byte] = {
-    _.map(_.toString).through(utf8Encode)
   }
 
   def sampleTweetStreamAnalytics(sampleTweet: SampleTweet): SampleTweetStreamAnalytics =
