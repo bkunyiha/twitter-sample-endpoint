@@ -1,8 +1,8 @@
-package com.banno.twittersampleendpoint.service
+package com.twitter.sampleendpoint.service
 
 import cats.effect.IO
-import com.banno.twittersampleendpoint.UnitTestFixture._
-import com.banno.twittersampleendpoint.domain.{SampleTweet, SampleTweetStreamAnalytics}
+import com.twitter.sampleendpoint.UnitTestFixture._
+import com.twitter.sampleendpoint.domain.{SampleTweet, SampleTweetStreamAnalytics}
 import fs2.Stream
 import fs2.async.signalOf
 import org.scalatest.{FlatSpec, Matchers}

@@ -1,4 +1,4 @@
-package com.banno.twittersampleendpoint.service
+package com.twitter.sampleendpoint.service
 
 import cats.{Eq, Monoid}
 import scala.concurrent.duration._

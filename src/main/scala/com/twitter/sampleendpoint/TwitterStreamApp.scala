@@ -1,9 +1,9 @@
-package com.banno.twittersampleendpoint
+package com.twitter.sampleendpoint
 
 import cats.effect._
 import cats.implicits._
-import com.banno.twittersampleendpoint.domain._
-import com.banno.twittersampleendpoint.service.StreamAnalyticsService
+import com.twitter.sampleendpoint.domain._
+import com.twitter.sampleendpoint.service.StreamAnalyticsService
 import fs2.StreamApp.ExitCode
 import fs2.async.signalOf
 import fs2.io.stdoutAsync

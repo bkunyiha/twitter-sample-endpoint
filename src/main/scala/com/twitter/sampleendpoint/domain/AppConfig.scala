@@ -1,4 +1,4 @@
-package com.banno.twittersampleendpoint.domain
+package com.twitter.sampleendpoint.domain
 
 final case class AppConfig(server: ServerConfig, twitterCredentials: TwitterCredentials)
 

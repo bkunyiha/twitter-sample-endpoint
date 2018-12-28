@@ -1,4 +1,4 @@
-package com.banno.twittersampleendpoint
+package com.twitter.sampleendpoint
 
 import cats.effect._
 import org.http4s.Method.GET

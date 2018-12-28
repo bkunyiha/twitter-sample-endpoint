@@ -4,13 +4,13 @@
  *  -  Using custom tweeter stream decoded object (SampleTweet)
  */
 
-package com.banno.twittersampleendpoint.service
+package com.twitter.sampleendpoint.service
 
 import java.net.URL
 
 import cats.implicits._
 import cats.{Eq, Monoid}
-import com.banno.twittersampleendpoint.domain.SampleTweet
+import com.twitter.sampleendpoint.domain.SampleTweet
 import com.twitter.algebird.SpaceSaver
 
 import scala.util.{Success, Try}

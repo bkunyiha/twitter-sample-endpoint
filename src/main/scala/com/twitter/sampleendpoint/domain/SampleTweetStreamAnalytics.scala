@@ -1,8 +1,8 @@
-package com.banno.twittersampleendpoint.domain
+package com.twitter.sampleendpoint.domain
 
 import cats.Monoid
 import cats.implicits._
-import com.banno.twittersampleendpoint.service.{Counter, EmojiStats, HashTagStats, LinkStats}
+import com.twitter.sampleendpoint.service.{Counter, EmojiStats, HashTagStats, LinkStats}
 
 final case class SampleTweetStreamAnalytics(counter: Counter, emoji: EmojiStats, hashTagStats: HashTagStats, linkStats: LinkStats)
 

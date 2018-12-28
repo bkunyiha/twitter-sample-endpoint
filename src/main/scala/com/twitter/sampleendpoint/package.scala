@@ -1,6 +1,6 @@
-package com.banno
+package com.twitter
 
-import com.banno.twittersampleendpoint.TwitterSampleStreamRoute._
+import com.twitter.sampleendpoint.TwitterSampleStreamRoute._
 import com.twitter.algebird.{Approximate, SpaceSaver}
 import com.vdurmont.emoji.Emoji
 import fs2.{Pipe, Stream}
@@ -10,7 +10,7 @@ import io.circe.{Encoder, Json}
 
 import scala.concurrent.duration._
 
-package object twittersampleendpoint {
+package object sampleendpoint {
 
   val MillisPerHour = 1.hour.toMillis
   val MillisPerMinute = 1.minute.toMillis

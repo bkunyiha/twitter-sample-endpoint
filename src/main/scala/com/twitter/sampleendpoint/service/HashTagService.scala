@@ -7,11 +7,11 @@
  *  - Added percentage tweets with hashtags
  */
 
-package com.banno.twittersampleendpoint.service
+package com.twitter.sampleendpoint.service
 
 import cats.implicits._
 import cats.{Eq, Monoid}
-import com.banno.twittersampleendpoint.domain.SampleTweet
+import com.twitter.sampleendpoint.domain.SampleTweet
 import com.twitter.algebird.SpaceSaver
 
 /** Process the hash tags in a tweet */

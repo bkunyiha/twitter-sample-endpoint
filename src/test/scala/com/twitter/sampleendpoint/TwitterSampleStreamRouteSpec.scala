@@ -1,9 +1,9 @@
-package com.banno.twittersampleendpoint
+package com.twitter.sampleendpoint
 
 import cats.effect.IO
-import com.banno.twittersampleendpoint.TwitterSampleStreamRoute._
-import com.banno.twittersampleendpoint.UnitTestFixture._
-import com.banno.twittersampleendpoint.domain.SampleTweetStreamAnalytics
+import com.twitter.sampleendpoint.TwitterSampleStreamRoute._
+import com.twitter.sampleendpoint.UnitTestFixture._
+import com.twitter.sampleendpoint.domain.SampleTweetStreamAnalytics
 import com.twitter.algebird.SpaceSaver
 import com.vdurmont.emoji.{Emoji, EmojiManager, EmojiParser => JEmojiParser}
 import fs2.async._

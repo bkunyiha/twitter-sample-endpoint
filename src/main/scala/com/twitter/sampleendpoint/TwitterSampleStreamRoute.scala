@@ -1,9 +1,9 @@
-package com.banno.twittersampleendpoint
+package com.twitter.sampleendpoint
 
 import cats.effect.Effect
-import com.banno.twittersampleendpoint.RouteEncoders._
-import com.banno.twittersampleendpoint.TwitterSampleStreamRoute._
-import com.banno.twittersampleendpoint.domain.SampleTweetStreamAnalytics
+import com.twitter.sampleendpoint.RouteEncoders._
+import com.twitter.sampleendpoint.TwitterSampleStreamRoute._
+import com.twitter.sampleendpoint.domain.SampleTweetStreamAnalytics
 import com.twitter.algebird.SpaceSaver
 import com.vdurmont.emoji.Emoji
 import fs2.async.mutable.Signal

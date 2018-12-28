@@ -1,9 +1,9 @@
-package com.banno.twittersampleendpoint
+package com.twitter.sampleendpoint
 
 import io.circe.parser._
-import com.banno.twittersampleendpoint.domain.SampleTweetStreamAnalytics
-import com.banno.twittersampleendpoint.TwitterSampleStreamRoute._
-import com.banno.twittersampleendpoint.service.{Counter, EmojiStats, HashTagStats, LinkStats}
+import com.twitter.sampleendpoint.domain.SampleTweetStreamAnalytics
+import com.twitter.sampleendpoint.TwitterSampleStreamRoute._
+import com.twitter.sampleendpoint.service.{Counter, EmojiStats, HashTagStats, LinkStats}
 import com.twitter.algebird.SpaceSaver
 import com.vdurmont.emoji.{Emoji, EmojiManager}
 import org.scalacheck.Arbitrary.{arbDouble, arbLong, arbitrary}

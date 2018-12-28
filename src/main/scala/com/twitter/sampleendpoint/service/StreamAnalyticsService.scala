@@ -1,9 +1,9 @@
-package com.banno.twittersampleendpoint.service
+package com.twitter.sampleendpoint.service
 
 import cats.effect._
 import cats.implicits._
-import com.banno.twittersampleendpoint.domain.{SampleTweet, SampleTweetStreamAnalytics}
-import com.banno.twittersampleendpoint.filterLeft
+import com.twitter.sampleendpoint.domain.{SampleTweet, SampleTweetStreamAnalytics}
+import com.twitter.sampleendpoint.filterLeft
 import fs2.Pipe
 import fs2.async.mutable.Signal
 import io.circe.{Json, Printer}

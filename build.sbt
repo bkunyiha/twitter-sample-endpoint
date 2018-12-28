@@ -12,7 +12,7 @@ val Specs2Version = "4.1.0"
 lazy val root = (project in file("."))
   .enablePlugins(BuildInfoPlugin)
   .settings(
-    organization := "com.banno",
+    organization := "com.twitter",
     name := "twitter-sample-endpoint",
     description := "Analytics for Titter sample endpoint API",
     version := "0.0.1-SNAPSHOT",
@@ -63,7 +63,7 @@ lazy val root = (project in file("."))
   .settings(
     //Build info
     buildInfoObject := "SbtBuildInfo",
-    buildInfoPackage := "com.banno.twittersampleendpoint",
+    buildInfoPackage := "com.twitter.sampleendpoint",
     buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion, description),
     buildInfoOptions += BuildInfoOption.BuildTime
   )

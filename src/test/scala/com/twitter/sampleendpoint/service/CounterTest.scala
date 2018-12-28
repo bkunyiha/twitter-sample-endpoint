@@ -1,4 +1,4 @@
-package com.banno.twittersampleendpoint.service
+package com.twitter.sampleendpoint.service
 
 /*import org.specs2.mutable.Specification
 
@@ -8,7 +8,7 @@ import org.specs2.ScalaCheck
 import org.specs2.mutable.Specification
 import org.typelevel.discipline.specs2.mutable.Discipline
 
-import com.banno.twittersampleendpoint.UnitTestFixture._
+import com.twitter.sampleendpoint.UnitTestFixture._
 
 
 class CounterSpec extends Specification with ScalaCheck with Discipline {

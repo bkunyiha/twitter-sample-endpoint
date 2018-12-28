@@ -3,11 +3,11 @@
  * Changes Made
  *  -  Using custom tweeter stream decoded object (SampleTweet)
  */
-package com.banno.twittersampleendpoint.service
+package com.twitter.sampleendpoint.service
 
 import cats.implicits._
 import cats.{Eq, Monoid}
-import com.banno.twittersampleendpoint.domain.SampleTweet
+import com.twitter.sampleendpoint.domain.SampleTweet
 import com.twitter.algebird.SpaceSaver
 import com.vdurmont.emoji.{Emoji, EmojiManager, EmojiParser => JEmojiParser}
 

@@ -1,4 +1,4 @@
-package com.banno.twittersampleendpoint.domain
+package com.twitter.sampleendpoint.domain
 
 import java.time._
 import java.time.format.DateTimeFormatter
